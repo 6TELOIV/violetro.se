@@ -47,6 +47,8 @@ export async function render(data) {
     <h1>${data.title}</h1>
     <p><small>${prev === null ? "" : `<a href="${prev}">Previous</a>`} ${next === null ? "" : `<a href="${next}">Next</a>`}</small></p>
     ${data.content}
+</div>
+<div class="container--sm">
     ${(await Promise.all(Object.values(mediaFiles).map(async ({md, img}) => 
         `<figure>
             <img src="${img}" alt="" width="512">
