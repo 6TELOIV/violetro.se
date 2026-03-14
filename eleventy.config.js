@@ -59,6 +59,11 @@ export default async function (eleventyConfig) {
 		return md.render(content);
 	}));
 
+	// add a filter to group a collection by years
+	eleventyConfig.addFilter("groupByYears", memoize((collection) => {
+		return Object.entries(Object.groupBy(collection, (item) => item.data.date.getFullYear())).map((([year, items]) => ({ year, items })));
+	}));
+
 	// add a fiter for future items only
 	eleventyConfig.addFilter("futureOnly", memoize((data, field = 'date') => {
 		return data.filter(({ [field]: date }) => date >= now);
@@ -69,7 +74,7 @@ export default async function (eleventyConfig) {
 		return now.toISOString();
 	});
 
-    // copy files thru raw from here
+	// copy files thru raw from here
 	eleventyConfig.addPassthroughCopy({ "public": "/" });
 
 	// liquid needs an explicit list of allowed references to allow including folders like node_modules

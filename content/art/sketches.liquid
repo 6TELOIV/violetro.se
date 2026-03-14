@@ -15,9 +15,12 @@ eleventyNavigation:
         &dash;Jogging Baboon from <cite>BoJack Horseman</cite>
     </p>
 </div>
+{% assign sketchesByYears = collections.sketches | reverse | groupByYears %}
+{% for sketchesByYear in sketchesByYears %}
+<h2>{{sketchesByYear.year}}</h2>
 <ul>
-{% assign reversedSketches = collections.sketches | reverse %}
-{% for sketch in reversedSketches %}
+{% for sketch in sketchesByYear.items %}
     <li><a href="{{sketch.page.url}}">{{sketch.data.title}}</a></li>
 {% endfor %}
 </ul>
+{% endfor %}

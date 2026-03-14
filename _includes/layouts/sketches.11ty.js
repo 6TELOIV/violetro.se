@@ -3,7 +3,6 @@ import fs from "node:fs/promises"
 
 export const data = {
     layout: "layouts/default",
-    tags: "sketches",
 };
 export async function render(data) {
     // the file should be something like ./content/art/sketches/2026/02/25/index.md
@@ -28,20 +27,8 @@ export async function render(data) {
     }
 
     // find the prev and next pages if any exist
-    let prev = null;
-    let next = null;
-    let allFiles = [];
-    for await (const entry of fs.glob(`${dir}/../../../*/*/*`)) {
-        allFiles.push(entry);
-    }
-    allFiles.sort();
-    let index = allFiles.findIndex(file => path.relative(file, dir) === "");
-    if (index > 0) {
-        prev = allFiles[index - 1].replace("content", "").replace("\\", "/");
-    }
-    if (index < allFiles.length - 1) {
-        next = allFiles[index + 1].replace("content", "").replace("\\", "/");
-    }
+    let prev = this.getPreviousCollectionItem(data.collections.sketches, data.page);
+    let next = this.getNextCollectionItem(data.collections.sketches, data.page);
     return (
 `
 <style>
@@ -60,7 +47,7 @@ export async function render(data) {
     }
 </style>
 <h1>${data.title}</h1>
-<p><small>${prev === null ? "" : `<a href="${prev}">Previous</a>`} ${next === null ? "" : `<a href="${next}">Next</a>`}</small></p>
+<p><small>${prev ? `<a href="${prev.url}">Previous</a>` : ""} ${next ? `<a href="${next.url}">Next</a>` : ""}</small></p>
 ${data.content}
 <div class="container--sm">
     ${(await Promise.all(Object.values(mediaFiles).map(async ({md, img}) => 

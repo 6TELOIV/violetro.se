@@ -2,11 +2,14 @@ import path from "node:path"
 
 export default {
     layout: "layouts/sketches",
+    tags: "sketches",
     eleventyComputed: {
-        title: (data) => {
+        date: (data) => {
             const { dir } = path.parse(data.page.inputPath);
-            const date = new Date(dir.match(/\d\d\d\d\/\d\d\/\d\d/)[0]);
-            return date.toLocaleString("en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+            return new Date(dir.match(/\d\d\d\d\/\d\d\/\d\d/)[0]);
+        },
+        title: (data) => {
+            return new Date(data.date).toLocaleString("en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
         },
         eleventyNavigation: (data) => {
             return {
