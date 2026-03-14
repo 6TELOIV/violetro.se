@@ -1,0 +1,51 @@
+<style>
+    footer {
+        border-top: 1px solid;
+    }
+
+    .footer--address {
+        display: grid;
+        grid-template-columns: 5rem 1fr;
+        align-items: center;
+        gap: 1rem
+    }
+    .footer--address--logo {
+        width: 100%;
+        height: auto;
+    }
+
+    .footer--construction {
+        display: block;
+        margin-inline: auto;
+    }
+
+    .footer--copyright {
+        text-align: center;
+    }
+    
+    .footer-buttons {
+        text-align: center;
+    }
+
+    @media screen and (min-width: 768px) {
+        .footer {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+</style>
+<footer>
+    <div class="footer--copyright">
+        <p>
+            &copy; Copyright {{  "now" | date: '%Y' }}
+        </p>
+        <p>
+            <em>Built with <a href="https://www.11ty.dev/">{{ eleventy.generator }}</a></em>
+        </p>
+    </div>
+    <div class="container--lg footer-buttons">
+        <a href="https://nekoweb.org/"><img src="https://nekoweb.org/assets/buttons/button11.gif" alt="nekoweb"></a><!-- button by milkyway.moe -->
+        <a href="https://github.com/6TELOIV/violetro.se">
+            <img src="/media/buttons/github.png" height="31" width="88" alt="Github">
+        </a>
+    </div>
+</footer>

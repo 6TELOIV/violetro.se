@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="{{ metadata.language }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+      {% if title %}
+        {{ title }} - {{ metadata.title }}
+      {% else %}
+        {{ metadata.title }}
+      {% endif %}
+    </title>
+    <meta name="description" content="{{ description or metadata.description }}">
+    <meta name="generator" content="{{ eleventy.generator }}">
+    <style>{% getBundle "css" %}</style>
+    <style>{% include 'normalize.css' %}</style>
+    <style>{% include 'global.css' %}</style>
+    <script type="module" src="{% getBundleFileUrl "js" %}"></script>
+    <script type="module">{% include 'node_modules/invokers-polyfill/invoker.min.js' %}</script>
+    <style>
+      body {
+          background: var(--background);
+          color: var(--foreground);
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+      }
+      main {
+          flex-grow: 1;
+      }
+    </style>
+    <script>
+        // see https://gomakethings.com/revisiting-how-to-dismiss-native-html-dialog-elements-when-the-backdrop-is-clicked/
+        document.addEventListener('click', (event) => {
+            // Ignore clicks inside the <dialog>
+            if (event.target.closest('dialog')) return;
+
+            // Otherwise, close the open <dialog>
+            const dialog = document.querySelector('dialog[open]');
+            console.log(dialog?.dataset)
+            if (dialog?.dataset?.backdropDismisses !== undefined) {
+                dialog.close();
+            }
+        });
+    </script>
+  </head>
+  <body>
+    {% getBundle "fontawesome" %}
+    {% include 'header' %}
+    <main id="main">
+      {{ content }}
+    </main>
+    {% include 'footer' %}
+    <!-- This page `{{ page.url }}` was built on {{ "now" | date: '%Y-%m-%dT%H:%M:%S.%L%z' }} -->
+  </body>
+
+</html>

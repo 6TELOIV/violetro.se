@@ -1,0 +1,1 @@
+On this day, I did a few heads/faces. I also talked with a friend who gave good feedback on proportions and suggested some resources for my reference.

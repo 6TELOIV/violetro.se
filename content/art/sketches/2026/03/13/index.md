@@ -1,0 +1,1 @@
+Having not drawn for a while, I decided to try out some exercises to get back into it.

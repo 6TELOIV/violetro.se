@@ -1,0 +1,97 @@
+--- 
+layout: layouts/base
+---
+<div class="container--lg">
+    <h1>trystero demo</h1>
+    <label>
+        Display Name
+        <input id="name" name="name">
+    </label>
+    <form id="order-drink">
+        <label>
+            Recipient
+            <select id="recipient" name="recipient" required></select>
+        </label>
+        <label>
+            Drink
+            <select name="drink" required>
+                <option value="Beer">Beer</option>
+                <option value="Rosé">Rosé</option>
+                <option value="Negroni">Negroni</option>
+            </select>
+        </label>
+        <label>
+            Ice?
+            <input name="withIce" type="checkbox">
+        </label>
+        <button name="order" value="one">Send</button>
+        
+        <button name="order" value="a-round">Buy a round</button>
+    </form>
+</div>
+<script type="module">
+    import { joinRoom } from 'https://cdn.jsdelivr.net/npm/trystero@0.22.0/+esm'
+    
+    let name = ''
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const orderDrinkForm = document.getElementById('order-drink')
+        const recipientSelect = document.getElementById('recipient')
+        const nameInput = document.getElementById('name')
+
+        const room = joinRoom({ appId: 'violetro.se' }, 'trystero-demo')
+        const [sendDrink, getDrink] = room.makeAction('drink')
+        const [sendName, getName] = room.makeAction('name')
+
+        room.onPeerJoin(peerId => {
+            console.log(`${peerId} joined`)
+            const newOption = document.createElement('option')
+            newOption.textContent = peerId
+            newOption.setAttribute('value', peerId)
+            recipientSelect.appendChild(newOption)
+        })
+        room.onPeerLeave(peerId => {
+            console.log(`${peerId} left`)
+            for (const option of Array.from(recipientSelect.children)) {
+                if (option.value === peerId) {
+                    recipientSelect.removeChild(option)
+                    break
+                }
+            }
+        })
+
+        nameInput.addEventListener("input", (e) => {
+            console.log(e);
+            sendName({ name: e.target.value });
+        });
+
+        orderDrinkForm.addEventListener("submit", (e) => {
+            e.preventDefault()
+            const data = new FormData(orderDrinkForm);
+            if (data.get("order") === "a-round") {
+                sendDrink({ drink: data.get('drink'), withIce: data.get('withIce') })
+            } else {
+                sendDrink({ drink: data.get('drink'), withIce: data.get('withIce') }, data.get('recipient'))
+            }
+            return false;
+        })
+
+        // listen for drinks sent to you
+        getDrink((data, peerId) =>
+            alert(
+                `got a ${data.drink} with${data.withIce ? '' : 'out'} ice from ${peerId}`
+            )
+        )
+
+        // listens for name updates to change the option text
+        getName((data, peerId) => {
+            console.log(data, peerId)
+            for (const option of Array.from(recipientSelect.children)) {
+                if (option.value === peerId) {
+                    option.textContent = data.name
+                    break
+                }
+            }
+        })
+    })
+</script>
