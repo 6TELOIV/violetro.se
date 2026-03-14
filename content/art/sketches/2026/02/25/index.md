@@ -3,3 +3,4 @@ This is the first day I really started to try to learn to draw. You can see a lo
 I remembered basic shading from middle school art class, but everything else was novel to me. I did a lot of hand gesture exercises from [Line of Action](https://line-of-action.com/en)
 
 Shoutout to my friend Aki for giving me a ton of good resources to learn these things!
+
