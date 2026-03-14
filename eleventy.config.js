@@ -1,9 +1,10 @@
 import eleventyNavigationPlugin from "@11ty/eleventy-navigation";
 import eleventyFontAwesomePlugin from "@11ty/font-awesome";
-import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
+import Image, { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 import eleventyAutoCacheBuster from "eleventy-auto-cache-buster";
 import CleanCSS from "clean-css";
 import { RenderPlugin } from "@11ty/eleventy";
+
 
 import pluginFilters from "./_config/filters.js";
 
@@ -57,8 +58,21 @@ export default async function (eleventyConfig) {
 		return now.toISOString();
 	});
 
+	// image handling for links
+	eleventyConfig.addShortcode("image", async function (src) {
+		return await Image(src, {
+			widths: [1920],
+			formats: ["webp"],
+			sharpWebpOptions: {
+				lossless: true
+			},
+			outputDir: "_site/img"
+		});
+	});
+
 	// copy files thru raw from here
 	eleventyConfig.addPassthroughCopy({ "public": "/" });
+	eleventyConfig.addPassthroughCopy({ "node_modules/photoswipe": "/photoswipe" });
 
 	// liquid needs an explicit list of allowed references to allow including folders like node_modules
 	// https://github.com/11ty/eleventy/issues/3502#issuecomment-2436040052

@@ -37,7 +37,6 @@
 
             // Otherwise, close the open <dialog>
             const dialog = document.querySelector('dialog[open]');
-            console.log(dialog?.dataset)
             if (dialog?.dataset?.backdropDismisses !== undefined) {
                 dialog.close();
             }

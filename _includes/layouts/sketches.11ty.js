@@ -50,8 +50,8 @@ export async function render(data) {
 <script type="module">
 import PhotoSwipeLightbox from '/photoswipe/dist/photoswipe-lightbox.esm.js';
 const lightbox = new PhotoSwipeLightbox({
-  gallery: '#my-gallery',
-  children: 'a',
+  gallery: '#sketches',
+  children: 'figure>a:has(img)',
   pswpModule: () => import('/photoswipe/dist/photoswipe.esm.js')
 });
 lightbox.init();
@@ -59,14 +59,19 @@ lightbox.init();
 <h1>${data.title}</h1>
 <p><small>${[prev && `<a href="${prev.url}">&laquo; ${prev.data.date.toLocaleDateString("en-US", { month: "short", day: "2-digit"})}</a>`, next && `<a href="${next.url}">${next.data.date.toLocaleDateString("en-US", { month: "short", day: "2-digit"})} &raquo;</a>`].filter(Boolean).join(" ")}</small></p>
 ${data.content}
-<div class="container--sm">
-    ${(await Promise.all(Object.values(mediaFiles).map(async ({md, img}) => 
-        `<figure class="sketch">
-            <img src="${img}" alt="" width="574">
+<div class="container--sm" id="sketches">
+    ${(await Promise.all(Object.values(mediaFiles).map(async ({md, img}) => {
+        const image = await this.image(`${dir}/${img}`);
+        const theOrginalImage = Object.values(image)[0][0];
+        return `<figure class="sketch">
+            <a href="${theOrginalImage.url}" data-pswp-width="${theOrginalImage.width}" data-pswp-height="${theOrginalImage.height}">
+                <img src="${img}" alt="" width="574">
+            </a>
             ${md ? `<figcaption>
                 ${await this.renderFile(md)}
             </figcaption>` : ""}
         </figure>`
+    }
     ))).join('\n')}
 </div>`
     );
