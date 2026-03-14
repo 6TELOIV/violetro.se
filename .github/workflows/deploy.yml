@@ -22,3 +22,8 @@ jobs:
           nekoweb-domain: 'violetrose.nekoweb.org'
           nekoweb-username: 'violetrose'
           directory: '_site'
+      - name: Cache 11ty disc cache
+        uses: actions/cache@v4
+        with:
+          path: ./.cache
+          key: ${{ runner.os }}-eleventy-cache
