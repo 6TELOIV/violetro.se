@@ -1,4 +1,4 @@
-{% assign navPages = collections.all | eleventyNavigation %}
+{% assign navPages = collections.all | eleventyNavigation: "Home" %}
 <ul class="nav">
     {%- for entry in navPages %}
     <li class="nav--item{% if entry.url == page.url or entry.url != '/' and page.url contains entry.url %} nav--item--active{% endif %}">

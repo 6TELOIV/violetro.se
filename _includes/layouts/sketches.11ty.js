@@ -2,7 +2,7 @@ import path from "node:path"
 import fs from "node:fs/promises"
 
 export const data = {
-    layout: "layouts/base",
+    layout: "layouts/default",
     tags: "sketches",
 };
 export async function render(data) {
@@ -43,15 +43,29 @@ export async function render(data) {
         next = allFiles[index + 1].replace("content", "").replace("\\", "/");
     }
     return (
-`<div class="container--lg">
-    <h1>${data.title}</h1>
-    <p><small>${prev === null ? "" : `<a href="${prev}">Previous</a>`} ${next === null ? "" : `<a href="${next}">Next</a>`}</small></p>
-    ${data.content}
-</div>
+`
+<style>
+    .sketch {
+        border: 1px solid ButtonBorder;
+        background-color: ButtonFace;
+        color: ButtonText;
+        margin-inline: 0;
+    }
+    .sketch>img {
+        display: block;
+        width: 100%;
+    }
+    .sketch>figcaption {
+        border-top: 1px solid ButtonBorder;
+    }
+</style>
+<h1>${data.title}</h1>
+<p><small>${prev === null ? "" : `<a href="${prev}">Previous</a>`} ${next === null ? "" : `<a href="${next}">Next</a>`}</small></p>
+${data.content}
 <div class="container--sm">
     ${(await Promise.all(Object.values(mediaFiles).map(async ({md, img}) => 
-        `<figure>
-            <img src="${img}" alt="" width="512">
+        `<figure class="sketch">
+            <img src="${img}" alt="" width="574">
             ${md ? `<figcaption>
                 ${await this.renderFile(md)}
             </figcaption>` : ""}

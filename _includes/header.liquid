@@ -129,7 +129,7 @@
 <a href="#main" class="visually-hidden-focusable skip-link">Skip to main content</a>
 <header>
     <nav class="navbar">
-        <a href="/" class="navbar--logo">{{ metadata.title }}</a>
+        <a href="/" class="navbar--logo" aria-label="{{ metadata.title }}"><span aria-hidden>💜🌹</span></a>
         {% include 'nav' %}
         <button command="show-modal" commandfor="dialog-menu" class="nav-open" type="button" aria-label="Open Menu"><i class="fa-solid fa-bars"></i></button>
         <dialog aria-labelledby="dialog-menu--title" id="dialog-menu" data-backdrop-dismisses>
