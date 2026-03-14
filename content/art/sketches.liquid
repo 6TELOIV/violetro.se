@@ -1,0 +1,22 @@
+---
+layout: layouts/base
+eleventyNavigation:
+    key: Sketches
+---
+<div class="container--lg">
+    <h1>Sketches</h1>
+    <p>I try to keep this updated with my drawing practices.</p>
+    <div style="background: ButtonFace; color: ButtonText; border: 1px solid ButtonBorder; padding: 1em">
+        <blockquote>
+            <p>Every day it gets a little easier… But you gotta do it every day &dash; that&rsquo;s the hard part. But it does get easier.</p>
+        </blockquote>
+        <p>
+            &dash;Jogging Baboon from <cite>BoJack Horseman</cite>
+        </p>
+    </div>
+    <ul>
+    {% for sketch in collections.sketches %}
+        <li><a href="{{sketch.page.url}}">{{sketch.data.title}}</a></li>
+    {% endfor %}
+    </ul>
+</div>
