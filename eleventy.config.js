@@ -2,10 +2,10 @@ import eleventyNavigationPlugin from "@11ty/eleventy-navigation";
 import eleventyFontAwesomePlugin from "@11ty/font-awesome";
 import { eleventyImageTransformPlugin } from "@11ty/eleventy-img";
 import eleventyAutoCacheBuster from "eleventy-auto-cache-buster";
-import memoize from "memoize";
 import CleanCSS from "clean-css";
-import markdownIt from "markdown-it";
 import { RenderPlugin } from "@11ty/eleventy";
+
+import pluginFilters from "./_config/filters.js";
 
 export default async function (eleventyConfig) {
 	const now = new Date();
@@ -26,6 +26,8 @@ export default async function (eleventyConfig) {
 	});
 	// cache bust assets based on hash
 	eleventyConfig.addPlugin(eleventyAutoCacheBuster);
+	// add our own filters
+	eleventyConfig.addPlugin(pluginFilters);
 
 	// Per-page bundles, see https://github.com/11ty/eleventy-plugin-bundle
 	// Bundle <style> content and adds a {% css %} paired shortcode
@@ -49,25 +51,6 @@ export default async function (eleventyConfig) {
 		// Supported selectors: https://www.npmjs.com/package/posthtml-match-helper
 		bundleHtmlContentFromSelector: "script",
 	});
-
-	// add a filter to render as markdown
-	const md = new markdownIt({
-		html: true,
-	});
-
-	eleventyConfig.addFilter("markdown", memoize((content) => {
-		return md.render(content);
-	}));
-
-	// add a filter to group a collection by years
-	eleventyConfig.addFilter("groupByYears", memoize((collection) => {
-		return Object.entries(Object.groupBy(collection, (item) => item.data.date.getFullYear())).map((([year, items]) => ({ year, items })));
-	}));
-
-	// add a fiter for future items only
-	eleventyConfig.addFilter("futureOnly", memoize((data, field = 'date') => {
-		return data.filter(({ [field]: date }) => date >= now);
-	}));
 
 	// expose the build date
 	eleventyConfig.addShortcode("currentBuildDate", () => {
