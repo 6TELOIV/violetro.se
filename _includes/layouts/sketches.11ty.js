@@ -38,7 +38,7 @@ export async function render(data) {
         color: ButtonText;
         margin-inline: 0;
     }
-    .sketch>img {
+    .sketch>a>img {
         display: block;
         width: 100%;
     }
