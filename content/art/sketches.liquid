@@ -5,13 +5,28 @@ eleventyNavigation:
     parent: Home
     order: 1
 ---
+<style>
+    .blockquote {
+        background: ButtonFace;
+        color: ButtonText;
+        border: 1px solid ButtonBorder;
+        padding: 1em;
+    }
+    .blockquote>blockquote {
+        margin-inline: 0;
+    }
+    .blockquote>.source {
+        font-size: smaller;
+        text-align: end;
+    }
+</style>
 <h1>Sketches</h1>
 <p>I try to keep this updated with my drawing practices.</p>
-<div style="background: ButtonFace; color: ButtonText; border: 1px solid ButtonBorder; padding: 1em">
+<div class="blockquote">
     <blockquote>
         <p>Every day it gets a little easier… But you gotta do it every day &dash; that&rsquo;s the hard part. But it does get easier.</p>
     </blockquote>
-    <p>
+    <p class="source">
         &dash;Jogging Baboon from <cite>BoJack Horseman</cite>
     </p>
 </div>
