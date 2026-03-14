@@ -47,14 +47,14 @@ export async function render(data) {
     <h1>${data.title}</h1>
     <p><small>${prev === null ? "" : `<a href="${prev}">Previous</a>`} ${next === null ? "" : `<a href="${next}">Next</a>`}</small></p>
     ${data.content}
-    ${await Promise.all(Object.values(mediaFiles).map(async ({md, img}) => 
+    ${(await Promise.all(Object.values(mediaFiles).map(async ({md, img}) => 
         `<figure>
             <img src="${img}" alt="" width="512">
             ${md ? `<figcaption>
                 ${await this.renderFile(md)}
             </figcaption>` : ""}
         </figure>`
-    ))}
+    ))).join('\n')}
 </div>`
     );
 }
