@@ -46,8 +46,18 @@ export async function render(data) {
         border-top: 1px solid ButtonBorder;
     }
 </style>
+<link rel="stylesheet" href="/photoswipe/dist/photoswipe.css">
+<script type="module">
+import PhotoSwipeLightbox from '/photoswipe/dist/photoswipe-lightbox.esm.js';
+const lightbox = new PhotoSwipeLightbox({
+  gallery: '#my-gallery',
+  children: 'a',
+  pswpModule: () => import('/photoswipe/dist/photoswipe.esm.js')
+});
+lightbox.init();
+</script>
 <h1>${data.title}</h1>
-<p><small>${prev ? `<a href="${prev.url}">Previous</a>` : ""} ${next ? `<a href="${next.url}">Next</a>` : ""}</small></p>
+<p><small>${[prev && `<a href="${prev.url}">&laquo; ${prev.data.date.toLocaleDateString("en-US", { month: "short", day: "2-digit"})}</a>`, next && `<a href="${next.url}">${next.data.date.toLocaleDateString("en-US", { month: "short", day: "2-digit"})} &raquo;</a>`].filter(Boolean).join(" ")}</small></p>
 ${data.content}
 <div class="container--sm">
     ${(await Promise.all(Object.values(mediaFiles).map(async ({md, img}) => 
