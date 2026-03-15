@@ -44,6 +44,11 @@ export async function render(data) {
     }
     .sketch>figcaption {
         border-top: 1px solid ButtonBorder;
+        padding-inline: 2em;
+    }
+    .sketch>figcaption>ul,
+    .sketch>figcaption>ol {
+        padding: 0;
     }
 </style>
 <link rel="stylesheet" href="/photoswipe/dist/photoswipe.css">
