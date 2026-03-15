@@ -1,0 +1,1 @@
+I haven't done much expression work, but have done lots of hands/feet/poses, so I tried to work on facial expressions today.
