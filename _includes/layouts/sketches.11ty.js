@@ -38,9 +38,38 @@ export async function render(data) {
         color: ButtonText;
         margin-inline: 0;
     }
+    .sketch>a {
+        display: block;
+        overflow: hidden;
+        position: relative;
+    }
+    .sketch>a>.fullscreen-indicator {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        color: black;
+        border: 1px solid currentColor;
+        background-color: white;
+        width: 2rem;
+        height: 2rem;
+        display: grid;
+        align-items: center;
+        justify-items: center;
+    }
+    .sketch>a>.fullscreen-indicator>svg {
+        height: 1rem;
+        width: 1rem;
+    }
     .sketch>a>img {
         display: block;
+        transition: transform 250ms;
         width: 100%;
+    }
+    .sketch>a:hover>img {
+        transform: scale(1.05);
+    }
+    .sketch>a:active>img {
+        transform: scale(1);
     }
     .sketch>figcaption {
         border-top: 1px solid ButtonBorder;
@@ -71,6 +100,7 @@ ${data.content}
         return `<figure class="sketch">
             <a href="${theOrginalImage.url}" data-pswp-width="${theOrginalImage.width}" data-pswp-height="${theOrginalImage.height}">
                 <img src="${img}" alt="" width="574">
+                <span class="fullscreen-indicator"><i class="fa-regular fa-images"></i></span>
             </a>
             ${md ? `<figcaption>
                 ${await this.renderFile(md)}
