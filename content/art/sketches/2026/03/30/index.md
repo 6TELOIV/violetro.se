@@ -1,0 +1,1 @@
+Been a minute since I did anything. Today I did some [silhouette sketches](https://www.youtube.com/shorts/vAJYO0Oq59E) (exercise idea from *The Art Coach*).
