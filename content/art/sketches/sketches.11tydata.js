@@ -11,6 +11,9 @@ export default {
         title: (data) => {
             return new Date(data.date).toLocaleString("en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
         },
+        description: (data) => {
+            return data.page.rawInput;
+        },
         eleventyNavigation: (data) => {
             return {
                 parent: "Sketches",

@@ -11,7 +11,9 @@
         {{ metadata.title }}
       {% endif %}
     </title>
-    <meta name="description" content="{{ description or metadata.description }}">
+    {% if description %}
+      <meta name="description" content="{{ description }}">
+    {% endif %}
     <meta name="generator" content="{{ eleventy.generator }}">
     <style>{% getBundle "css" %}</style>
     <style>{% include 'normalize.css' %}</style>
