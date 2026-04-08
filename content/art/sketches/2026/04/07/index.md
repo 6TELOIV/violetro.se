@@ -1,0 +1,1 @@
+While at a bar, after giving my card to pay and waiting for the bartender to return, I tried to draw their face. The limited timeframe and forcing myself to draw from memory was very challenging.
