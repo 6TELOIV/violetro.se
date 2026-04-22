@@ -1,0 +1,1 @@
+I drew a sketch of Temmie (particularly, Aki's avitar from VR chat).
