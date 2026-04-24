@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head> 
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style eleventy:ignore>
+    @property --tint {
+      syntax: "<color>";
+      inherits: true;
+      initial-value: transparent;
+    }
+    div {
+      height: 250px;
+    }
+    #background-color {
+      transition: background-color 1s;
+      background: url(https://picsum.photos/1000), transparent;
+      background-blend-mode: luminosity;
+    }
+    #background-color:has(#background-color-toggle[aria-pressed=true]) {
+      background-color: red;
+    }
+    #property {
+      transition: --tint 1s;
+      background: url(https://picsum.photos/1000), var(--tint);
+      background-blend-mode: luminosity;
+    }
+    #property:has(#property-toggle[aria-pressed=true]) {
+      --tint: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Safari color transition bug</h1>
+  <h2>Using <code>background-color</code></h2>
+  <div id="background-color">
+    <button id="background-color-toggle" aria-pressed="false">Toggle Tint</button>
+  </div>
+  <h2>Using <code>var(--tint)</code></h2>
+  <div id="property">
+    <button id="property-toggle" aria-pressed="false">Toggle Tint</button>
+  </div>
+  <script eleventy:ignore>
+    const bgColorToggle = document.getElementById("background-color-toggle");
+    bgColorToggle.addEventListener("click", () => bgColorToggle.ariaPressed = bgColorToggle.ariaPressed === "true" ? "false" : "true");
+
+    const propertyToggle = document.getElementById("property-toggle");
+    propertyToggle.addEventListener("click", () => propertyToggle.ariaPressed = propertyToggle.ariaPressed === "true" ? "false" : "true");
+  </script>
+</body>
+</html>
