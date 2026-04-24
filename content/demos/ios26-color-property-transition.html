@@ -9,6 +9,8 @@
       initial-value: transparent;
     }
     div {
+      /* required to trigger the bug; arises in the wild through actual use of transforms, but this is a way to ensure it occurs. */
+      will-change: transform;
       height: 250px;
     }
     #background-color {
