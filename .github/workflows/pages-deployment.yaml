@@ -10,6 +10,11 @@ jobs:
       deployments: write
     name: Deploy to Cloudflare Pages
     steps:
+      - name: Cache
+        uses: actions/cache@v5.0.5
+        with:
+          path: _site
+          key: ${{ runner.os }}-site
       - name: Checkout
         uses: actions/checkout@v4
       - uses: actions/setup-node@v6
