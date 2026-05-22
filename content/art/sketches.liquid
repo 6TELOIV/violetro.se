@@ -5,21 +5,6 @@ eleventyNavigation:
     parent: Home
     order: 1
 ---
-<style>
-    .blockquote {
-        background: ButtonFace;
-        color: ButtonText;
-        border: 1px solid ButtonBorder;
-        padding: 1em;
-    }
-    .blockquote>blockquote {
-        margin-inline: 0;
-    }
-    .blockquote>.source {
-        font-size: smaller;
-        text-align: end;
-    }
-</style>
 <h1>Sketches</h1>
 <p>I try to keep this updated with my drawing practices.</p>
 <div class="blockquote">
@@ -35,7 +20,7 @@ eleventyNavigation:
 <h2>{{sketchesByYear.year}}</h2>
 <ul>
 {% for sketch in sketchesByYear.items %}
-    <li><a href="{{sketch.page.url}}">{{sketch.data.title}}</a></li>
+    <li><a href="{{sketch.page.url}}">{{sketch.data.shortTitle}}</a></li>
 {% endfor %}
 </ul>
 {% endfor %}

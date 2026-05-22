@@ -1,0 +1,19 @@
+---
+layout: layouts/default
+eleventyNavigation:
+    key: Scrapbook
+    parent: Home
+    order: 1
+---
+<h1>Scrapbooks</h1>
+<p>Does life mimic art or uhhh something else idk?</p>
+<p>These are one-off pages to show off photos from each month!</p>
+{% assign scrapbooksByYears = collections.scrapbooks | reverse | groupByYears %}
+{% for scrapbooksByYear in scrapbooksByYears %}
+<h2>{{scrapbooksByYear.year}}</h2>
+<ul>
+{% for scrapbook in scrapbooksByYear.items %}
+    <li><a href="{{scrapbook.page.url}}">{{scrapbook.data.shortTitle}}</a></li>
+{% endfor %}
+</ul>
+{% endfor %}

@@ -1,0 +1,313 @@
+<style>
+    h1 {
+        color: rebeccapurple;
+        font-variant: small-caps;
+        text-align: center;
+    }
+
+    .scrapbook-wrapper {
+        display: grid;
+        gap: 10px;
+    }
+
+    .scrapbook-page {
+        border: 1px solid currentColor;
+        box-shadow: 0 10px 20px #0008;
+        display: grid;
+        gap: 10px;
+        padding: 10px;
+        background: wheat;
+        color: rebeccapurple;
+        margin-block: 1rem;
+    }
+
+    .scrapbook-page * {
+        margin: 0;
+    }
+
+    .scrapbook-heading {
+        display: flex;
+        gap: 10px;
+        margin-inline: auto;
+    }
+
+    .scrapbook-heading h2,
+    .scrapbook-heading h3,
+    .scrapbook-heading h4,
+    .scrapbook-heading h5,
+    .scrapbook-heading h6 {
+        font-variant: small-caps;
+        text-align: center;
+    }
+
+    .scrapbook-photo-grid {
+        display: grid;
+        gap: 10px;
+    }
+
+    @media screen and (min-width: 576px) {
+        .scrapbook-photo-grid {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+        }
+    }
+
+    .scrapbook-figure {
+        transition: transform 200ms;
+        display: grid;
+        transform: rotate(-5deg);
+        box-shadow: 0 10px 20px #0008;
+        background-color: white;
+        padding: 5px;
+        align-self: center;
+    }
+
+    .scrapbook-figure-caption {
+        padding: 5px 10px;
+        text-align: center;
+    }
+
+    .scrapbook-photo {
+        position: relative;
+    }
+
+    .scrapbook-photo-tack {
+        width: 20%;
+        height: 20%;
+        object-fit: contain;
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translateX(33%) translateY(-33%) rotate(5deg);
+    }
+
+    .scrapbook-photo-sticker {
+        width: 30%;
+        height: 30%;
+        object-fit: contain;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        transform: translateX(-33%) translateY(33%) rotate(5deg);
+    }
+
+    .scrapbook-figure:nth-child(2) .scrapbook-photo-tack {
+        filter: hue-rotate(250deg);
+    }
+
+    .scrapbook-figure:nth-child(3) .scrapbook-photo-tack {
+        filter: hue-rotate(60deg) saturate(200%) brightness(125%);
+    }
+
+    .scrapbook-figure:nth-child(4) .scrapbook-photo-tack {
+        filter: hue-rotate(100deg) brightness(150%);
+    }
+
+    .scrapbook-figure:nth-child(5) .scrapbook-photo-tack {
+        filter: hue-rotate(200deg) brightness(150%);
+    }
+
+    .scrapbook-figure:nth-child(6) .scrapbook-photo-tack {
+        filter: hue-rotate(300deg) saturate(80%);
+    }
+
+    .scrapbook-figure:nth-child(2n) {
+        transform: rotate(5deg);
+    }
+
+    .scrapbook-figure:nth-child(2n) .scrapbook-photo-tack {
+        left: 0;
+        right: unset;
+        transform: translateX(-33%) translateY(-33%) scaleX(-1) rotate(-5deg);
+    }
+
+    .scrapbook-figure:nth-child(2n) .scrapbook-photo-sticker {
+        left: unset;
+        right: 0;
+        transform: translateX(33%) translateY(33%) rotate(-5deg);
+    }
+
+    .scrapbook-figure:hover {
+        transform: rotate(0);
+    }
+</style>
+<h1>January 2026</h1>
+<div class="scrapbook-wrapper">
+    <div class="scrapbook-page">
+        <div class="scrapbook-heading">
+            <img src="media/stickers/cutehearts.gif" alt="" style="transform:scaleX(-1)" />
+            <h2>Pets</h2>
+            <img src="media/stickers/cutehearts.gif" alt="" />
+        </div>
+        <div class="scrapbook-photo-grid">
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/gnocchi-orb.jpg" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/crystalball.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        Gnocchi orb of wisdom 🔮<br>
+                        What knowledge does he contain?
+                    </p>
+                </figcaption>
+            </figure>
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/gooby.png" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/snowflake.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        Gooby is ready for the cold! 🥶
+                    </p>
+                </figcaption>
+            </figure>
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/pi-luna.jpg" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/yinyang.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        Pi and Luna in harmony ☯
+                    </p>
+                </figcaption>
+            </figure>
+        </div>
+    </div>
+    <div class="scrapbook-page">
+        <div class="scrapbook-heading">
+            <img src="media/stickers/surfing.gif" alt="" style="transform:scaleX(-1)" />
+            <h2>VR Chat</h2>
+            <img src="media/stickers/surfing.gif" alt="" />
+        </div>
+        <div class="scrapbook-photo-grid">
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/new-years.png" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/champaign.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        New year, new hobbies!<br>Redownloaded VRChat after 7 years
+                    </p>
+                </figcaption>
+            </figure>
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/dale.png" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/fish.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        Fishing! 🎣<br>
+                        w/ Dale
+                    </p>
+                </figcaption>
+            </figure>
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/aki-and-clockman.png" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/dumbell.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        At <a href="https://www.themightygym.com/">the Mighty Gym</a> 💪
+                        <br>w/ Dale, Aki, and Clockman :&rpar;
+                    </p>
+                </figcaption>
+            </figure>
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/chief-fireworks.png" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/firework.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        Enjoying the fireworks<br>
+                        with GlacialChief and Dale
+                    </p>
+                </figcaption>
+            </figure>
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/brokenpsycho.png" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/ghost.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        The cryptid brokenpsycho appears 🫣
+                    </p>
+                </figcaption>
+            </figure>
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/kira.png" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/sabers.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        Playing vrc beatsaber 🎶<br>w/ Kira
+                    </p>
+                </figcaption>
+            </figure>
+        </div>
+    </div>
+    <div class="scrapbook-page">
+        <div class="scrapbook-heading">
+            <img src="media/stickers/dice.gif" alt="" style="transform:scaleX(-1)" />
+            <h2>Grab Bag</h2>
+            <img src="media/stickers/dice.gif" alt="" />
+        </div>
+        <div class="scrapbook-photo-grid">
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/bikes-and-birds.jpg" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/dove.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        A pair of bikes,<br>
+                        A pair of birds!
+                    </p>
+                </figcaption>
+            </figure>
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/taiyaki.png" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/taiyaki.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        Delicious savory taiyaki 🤤
+                    </p>
+                </figcaption>
+            </figure>
+            <figure class="scrapbook-figure">
+                <div class="scrapbook-photo">
+                    <img class="scrapbook-photo-img" src="media/pictures/gameboy.jpg" alt="" />
+                    <img class="scrapbook-photo-tack" src="media/stickers/tack.gif" alt="" />
+                    <img class="scrapbook-photo-sticker" src="media/stickers/gameboy.gif" alt="" />
+                </div>
+                <figcaption class="scrapbook-figure-caption">
+                    <p>
+                        Lego GameBoy! 👾<br>Super accurate! 📏
+                    </p>
+                </figcaption>
+            </figure>
+        </div>
+    </div>
+</div>

@@ -8,8 +8,11 @@ export default {
             const { dir } = path.parse(data.page.inputPath);
             return new Date(dir.match(/\d\d\d\d\/\d\d\/\d\d/)[0]);
         },
+        shortTitle: (data) => {
+            return new Date(data.date).toLocaleString("en-US", { day: "numeric", month: "long", year: "numeric" });
+        },
         title: (data) => {
-            return new Date(data.date).toLocaleString("en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+            return `Sketch - ${data.shortTitle}`;
         },
         description: (data) => {
             return data.page.rawInput;
@@ -17,7 +20,7 @@ export default {
         eleventyNavigation: (data) => {
             return {
                 parent: "Sketches",
-                key: data.title,
+                key: data.shortTitle
             }
         }
     }

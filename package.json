@@ -21,6 +21,6 @@
     "markdown-it": "^14.1.1",
     "memoize": "^10.2.0",
     "photoswipe": "^5.4.4",
-    "trystero": "^0.22.0"
+    "trystero": "^0.24.0"
   }
 }

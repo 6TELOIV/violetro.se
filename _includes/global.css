@@ -65,3 +65,17 @@ img {
 .visually-hidden-focusable:not(:focus):not(:focus-within) * {
     overflow: hidden !important;
 }
+
+.blockquote {
+    background: ButtonFace;
+    color: ButtonText;
+    border: 1px solid ButtonBorder;
+    padding: 1em;
+}
+.blockquote>blockquote {
+    margin-inline: 0;
+}
+.blockquote>.source {
+    font-size: smaller;
+    text-align: end;
+}
