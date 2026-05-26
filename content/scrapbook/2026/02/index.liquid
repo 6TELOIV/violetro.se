@@ -1,0 +1,132 @@
+<style>
+    .photograph-container {
+        --x: 0; --y: 0;
+        --rot-range: -5deg;
+        perspective: 10in;
+        width: max-content;
+        height: max-content;
+    }
+    .photograph {
+        background-color: #FCFCFC;
+        box-shadow: inset 2px 2px 2px #FFFFFF, inset -2px -2px 2px #F8F8F8;
+        filter: drop-shadow(0 0.25px 1px #0006);
+        display: grid;
+        gap: 0;
+        margin: 0;
+        max-width: 3.5in;
+        padding: 0.3in 0.2in 0;
+        position: relative;
+        border-radius: 0.025in;
+        transform-style: preserve-3d;
+        transform: rotateY(calc(var(--x) * var(--rot-range))) rotateX(calc(var(--y) * var(--rot-range)));
+    }
+    .photograph.photograph-landscape {
+        aspect-ratio: 5/6;
+    }
+    .photograph.photograph-portrait {
+        aspect-ratio: 3/4;
+    }
+    .photograph:hover {
+        transition: transform 50ms linear;
+        filter: drop-shadow(calc(var(--x) * 1px) calc(var(--y) * -1px) 1px #0006);
+    }
+    .photograph-image {
+        position: relative;
+        height: min-content;
+    }
+    .photograph-image::after {
+        border-radius: 0.025in;
+        content: '';
+        display: block;
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        box-shadow: inset 0 0 16px #0004, 2px 2px 2px #FFFFFF, -2px -2px 2px #F8F8F8;
+    }
+    .photograph-image::before {
+        border-radius: 0.025in;
+        transition: background-position 50ms;
+        content: '';
+        display: block;
+        position: absolute;
+        z-index: 1;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background-image: repeating-linear-gradient(to bottom right, transparent, transparent 45%, #FFF8 50%, transparent 55%);
+        background-size: 200% 200%;
+        background-position: calc(50% * var(--x) + 50%) calc(-50% * var(--y) + 50%);
+        background-repeat: no-repeat;
+        mix-blend-mode: soft-light;
+    }
+    .photograph img {
+        display: block;
+        image-rendering: optimizeQuality;
+        filter: contrast(90%) brightness(90%);
+        border-radius: 0.025in;
+    }
+    .photograph figcaption {
+        font-family: 'marker', cursive;
+        text-align: center;
+    }
+    .photograph figcaption>:first-child {
+        margin-top: 0;
+    }
+    .photograph figcaption>:last-child {
+        margin-bottom: 0;
+    }
+</style>
+<h1>February 2026</h1>
+<p>
+    W.I.P. (not done)
+</p>
+<div class="scrapbook-page">
+    <div class="photograph-container">
+        <figure class="photograph photograph-portrait">
+            <div class="photograph-image">
+                <img class="smooth" src="media/pictures/grape-juice-bonita.png" alt="">
+            </div>
+            <figcaption>
+                <p>
+                    Grape Juice!
+                </p>
+            </figcaption>
+        </figure>
+    </div>
+    <div class="photograph-container">
+        <figure class="photograph photograph-landscape">
+            <div class="photograph-image">
+                <img class="smooth" src="media/pictures/forklift.png" alt="">
+            </div>
+            <figcaption>
+                <p>
+                    Grape Juice!
+                </p>
+            </figcaption>
+        </figure>
+    </div>
+</div>
+
+<script>
+    (() => {
+        function clamp(value, min, max) {
+            return Math.min(Math.max(value, min), max);
+        }
+        /** @type NodeListOf<HTMLElement> */
+        const photographs = document.querySelectorAll(".photograph-container");
+        photographs.forEach(photographContainer => {
+            photographContainer.addEventListener("pointermove", (e) => {
+                const { left, top, width, height } = photographContainer.getBoundingClientRect();
+                const x = clamp((2 * (e.clientX - left) / width) - 1, -1, 1);
+                const y = clamp((-2 * (e.clientY - top) / height) + 1, -1, 1);
+                photographContainer.style.setProperty("--x", x);
+                photographContainer.style.setProperty("--y", y);
+            });
+            photographContainer.addEventListener("pointerout", (e) => {
+                photographContainer.style.setProperty("--x", 0);
+                photographContainer.style.setProperty("--y", 0);
+            })
+        })
+    })();
+</script>
