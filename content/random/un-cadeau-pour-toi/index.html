@@ -6,7 +6,9 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <title>Un cadeau pour toi</title>
+    <title>Un cadeau pour toi...</title>
+    <meta name="description" content="Bon anniversaire, Kiki!">
+    <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js" integrity="sha256-c2wzlETIi6rVk+JK/fHW6PV0AZtON6EQ7LRT/3Rf/UE=" crossorigin="anonymous"></script>
     <style eleventy:ignore>
       /* font */
       @font-face {
@@ -48,6 +50,24 @@
             var(--bg-color-2) 100px,
             var(--bg-color-3) 100px
           );
+      }
+      body.toggled {
+        animation-play-state: paused;
+      }
+      #controls {
+        position: fixed;
+        bottom: 1em;
+        right: 1em;
+        display: grid;
+      }
+      #volume {
+        display: flex;
+        align-items: center;
+        transition: opacity 250ms;
+      }
+      #volume.hidden {
+        opacity: 0;
+        pointer-events: none;
       }
       @keyframes bg-pattern {
         0% {
@@ -103,6 +123,13 @@
         transition: transform var(--flip-timing) ease-in-out;
       }
 
+      /* shadows */
+      #letter-front,
+      #letter-contents,
+      #letter-back-flap-back {
+        filter: drop-shadow(0 6px 4px #0008);
+      }
+
       /* non-moving parts */
       #letter-front,
       #letter-back,
@@ -125,7 +152,7 @@
         background-color: wheat;
         height: 100%;
         overflow: hidden;
-        cursor: default;
+        cursor: unset;
         transition: max-height var(--dismiss-timing) ease var(--dismiss-timing)
           allow-discrete;
         margin-bottom: 50vh;
@@ -197,6 +224,7 @@
 
       p {
         text-indent: 1em;
+        line-height: 1.5;
       }
     </style>
   </head>
@@ -213,9 +241,7 @@
           />
           <div id="letter-back">
             <div id="letter-contents">
-              <p>
-                Dear <em>Killian</em>,
-              </p>
+              <p><em>Dear Killian</em>,</p>
               <p>
                 Aliquam euismod nisi quis diam dictum placerat at eu mi. Aenean
                 metus metus, semper quis rutrum ac, posuere nec justo. Ut et
@@ -254,6 +280,12 @@
                 ullamcorper massa est, congue ultrices mi vehicula nec. Fusce
                 quis consequat massa, sed finibus nisl.
               </p>
+              <img
+                src="media/photograph-sprite.png" 
+                alt="A polaroid photograph"
+                eleventy:formats="png"
+                style="display: block; margin-inline: auto; width: 128px; height: 128px;"
+              />
               <p>
                 Nunc est libero, hendrerit eu iaculis a, vehicula a ipsum.
                 Pellentesque placerat quam in facilisis interdum. Aliquam
@@ -287,9 +319,38 @@
         </div>
       </div>
     </main>
+    <div id="controls">
+      <label id="volume" class="hidden">
+        Volume:
+        <input type="range" min="0" max="1" step="0.01" value="0.1" />
+      </label>
+      <button id="toggle-background" type="button">
+        Toggle Background Animation
+      </button>
+    </div>
     <script eleventy:ignore>
       "use strict";
       (() => {
+        /** HTMLInputElement */
+        const volumeEl = document.querySelector("#volume");
+        Howler.volume(0.1);
+        volumeEl.addEventListener("input", () => {
+          Howler.volume(parseFloat(event.target.value));
+        });
+        const paper = new Howl({
+          src: '/audio/snd_paper_rise.wav',
+          html5: true,
+          onend: () => {
+            music.play()
+            volumeEl.classList.remove("hidden");
+          }
+        });
+        const music = new Howl({
+          src: '/audio/shop-3.mp3',
+          hrml5: true,
+          loop: true,
+        });
+        
         /** @type HTMLElement */
         const mainEl = document.querySelector("main");
         /** @type HTMLDivElement */
@@ -299,15 +360,18 @@
         /** @type null | number */
         let letterHeight = null;
 
-        /** @type (ev: PointerEvent) => void */
-        function letterClickHandler(ev) {
+        letterEl.addEventListener("click", () => {
           if (letterEl.classList.contains("dismissed")) {
           } else if (letterEl.classList.contains("opened")) {
             letterEl.classList.add("dismissed");
+            paper.play();
             setTimeout(() => {
               mainEl.append(letterContentsEl);
               mainEl.removeChild(letterEl);
-              letterContentsEl.style.setProperty("margin-top", `${-letterHeight / 2}px`);
+              letterContentsEl.style.setProperty(
+                "margin-top",
+                `${-letterHeight / 2}px`,
+              );
             }, 750);
           } else if (letterEl.classList.contains("flipped")) {
             letterEl.classList.add("opened");
@@ -315,8 +379,13 @@
             letterEl.classList.add("flipped");
             letterHeight = letterEl.clientHeight;
           }
-        }
-        letterEl.addEventListener("click", letterClickHandler);
+        });
+
+        /** @type HTMLButtonElement */
+        const toggleBackgroundEl = document.querySelector("#toggle-background");
+        toggleBackgroundEl.addEventListener("click", () =>
+          document.body.classList.toggle("toggled"),
+        );
       })();
     </script>
   </body>
