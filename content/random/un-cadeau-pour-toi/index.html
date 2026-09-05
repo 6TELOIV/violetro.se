@@ -7,8 +7,20 @@
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <title>Un cadeau pour toi...</title>
-    <meta name="description" content="Bon anniversaire, Kiki!">
-    <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js" integrity="sha256-c2wzlETIi6rVk+JK/fHW6PV0AZtON6EQ7LRT/3Rf/UE=" crossorigin="anonymous"></script>
+    <meta name="description" content="Bon anniversaire, Kiki!" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"
+      integrity="sha256-c2wzlETIi6rVk+JK/fHW6PV0AZtON6EQ7LRT/3Rf/UE="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+    <link
+      rel="preload"
+      href="/fonts/m5x7.ttf"
+      as="font"
+      type="font/ttf"
+      crossorigin="anonymous"
+    />
     <style eleventy:ignore>
       /* font */
       @font-face {
@@ -16,11 +28,27 @@
         src: url("/fonts/m5x7.ttf") format("truetype");
       }
 
+      /* button style resets */
+      #name-reroll,
+      .giftbox {
+        appearance: none;
+        background: none;
+        border: 0;
+        color: inherit;
+        font: inherit;
+        letter-spacing: inherit;
+        padding: 0;
+        margin: 0;
+        text-align: inherit;
+        cursor: pointer;
+      }
+
       /* root style defs */
       :root {
         --bg-color-1: #0066aa66;
         --bg-color-2: #aa006666;
         --bg-color-3: #00aa6666;
+        --text-color: #222;
         --flip-timing: 350ms;
         --dismiss-timing: 750ms;
       }
@@ -28,9 +56,10 @@
       /* scrolling plaid bg w/ deltarune colors */
       body {
         image-rendering: pixelated;
-        margin: 1em;
+        margin: 0.5em;
         font-family: "m5x7";
         font-size: 1.5em;
+        color: var(--text-color);
 
         background-size: 150px 150px;
         background-attachment: fixed;
@@ -59,15 +88,24 @@
         bottom: 1em;
         right: 1em;
         display: grid;
+        padding: 0.5em;
+        background-color: white;
+        filter: drop-shadow(0 0 4px #0008);
       }
-      #volume {
-        display: flex;
-        align-items: center;
+      #audio-controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         transition: opacity 250ms;
       }
-      #volume.hidden {
+      #audio-controls.hidden {
         opacity: 0;
+        height: 0;
         pointer-events: none;
+      }
+      #volume {
+        grid-column: span 2;
+        display: flex;
+        align-items: center;
       }
       @keyframes bg-pattern {
         0% {
@@ -145,17 +183,106 @@
       /* the letter inside */
       #letter-contents {
         margin-inline: auto;
-        width: calc(min(100%, 64ch) - 2em);
+        width: min(100%, 64ch);
         position: relative;
         z-index: 0;
-        padding-inline: 1em;
-        background-color: wheat;
         height: 100%;
         overflow: hidden;
         cursor: unset;
         transition: max-height var(--dismiss-timing) ease var(--dismiss-timing)
           allow-discrete;
         margin-bottom: 50vh;
+        display: grid;
+        gap: 1em;
+      }
+      #letter-contents.letter-dismissed {
+        overflow: unset;
+      }
+      .letter-section {
+        background-color: wheat;
+        border: 4px solid burlywood;
+        padding-inline: 1em;
+      }
+      .letter-section p {
+        text-indent: 1em;
+      }
+      .letter-system {
+        background-color: black;
+        border: 4px solid white;
+        color: white;
+        padding-inline: 1em;
+      }
+      .letter-system a,
+      .letter-system a:visited {
+        color: white;
+      }
+
+      /* gifts */
+      /* hide all elements after a non-open gift */
+      .gift:has(.gift-link) ~ * {
+        display: none;
+      }
+
+      .gift {
+        margin-inline: auto;
+        height: 128px;
+        width: 128px;
+        z-index: 1;
+        position: relative;
+      }
+      .giftbox {
+        cursor: grab;
+        display: block;
+        position: absolute;
+        z-index: 1;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        transition: opacity var(--dismiss-timing) ease-in;
+      }
+      .giftbox-bottom,
+      .giftbox-top {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        transition: transform var(--dismiss-timing) ease-in;
+      }
+      .gift.open .giftbox {
+        opacity: 0;
+      }
+      .gift.open .giftbox-top {
+        transform: translateY(-50%);
+      }
+      .gift.open .giftbox-bottom {
+        transform: translateY(50%);
+      }
+      .gift-link {
+        display: block;
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      .gift-link.hidden {
+        display: none;
+      }
+      .gift-link.shown {
+        opacity: 0;
+        animation: fade-in-gift var(--dismiss-timing) forwards;
+      }
+      @keyframes fade-in-gift {
+        100% {
+          opacity: 1;
+        }
+      }
+      .gift-sprite {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
       }
 
       /* back faces need to be flipped over and transparent until they need to show */
@@ -222,9 +349,34 @@
         cursor: default;
       }
 
+      .spoiler {
+        background-color: var(--text-color);
+        transition: background-color 250ms;
+        cursor: help;
+        padding: 1px 2px;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+      }
+      .spoiler.revealed {
+        background-color: burlywood;
+      }
+
       p {
-        text-indent: 1em;
         line-height: 1.5;
+      }
+
+      .icon {
+        height: 14px;
+        width: 14px;
+        vertical-align: baseline;
+      }
+      em .icon {
+        transform: skew(-10deg);
+      }
+
+      .confetti {
+        text-decoration: underline dashed currentColor 2px;
+        cursor: help;
       }
     </style>
   </head>
@@ -241,59 +393,155 @@
           />
           <div id="letter-back">
             <div id="letter-contents">
-              <p><em>Dear Killian</em>,</p>
-              <p>
-                Aliquam euismod nisi quis diam dictum placerat at eu mi. Aenean
-                metus metus, semper quis rutrum ac, posuere nec justo. Ut et
-                libero a libero blandit eleifend. Sed scelerisque ligula semper
-                sapien maximus aliquam. Mauris porta mi rhoncus risus sodales
-                mollis. Proin risus justo, faucibus at elit quis, facilisis
-                pharetra mi. Etiam nisi elit, bibendum ut odio quis, viverra
-                commodo lorem. Proin luctus urna vel turpis vulputate, egestas
-                facilisis nibh mollis.
-              </p>
-              <p>
-                Suspendisse imperdiet nisl nisi, id suscipit neque condimentum
-                sit amet. Etiam ut dolor viverra, placerat leo eget, ornare
-                nulla. Fusce facilisis ullamcorper eros, et congue urna ultrices
-                eget. Vivamus imperdiet ligula quis vestibulum molestie.
-                Pellentesque pharetra non libero eu congue. Donec eu hendrerit
-                risus, id tempor ante. Aenean venenatis pharetra dictum. Cras at
-                nisl eu lorem tincidunt consequat at non tellus. Cras tincidunt
-                urna vitae pulvinar dictum. Pellentesque volutpat odio mauris,
-                at suscipit elit sollicitudin eget. Vivamus tellus risus,
-                facilisis eu lobortis in, rhoncus quis odio. Suspendisse in
-                nulla dui.
-              </p>
-              <p>
-                Morbi luctus purus at arcu molestie finibus. Vestibulum ante
-                ipsum primis in faucibus orci luctus et ultrices posuere cubilia
-                curae; Praesent commodo elementum eros, sodales pellentesque
-                magna suscipit sit amet. Sed ac nunc finibus, mollis orci
-                laoreet, ornare purus. Sed nec sem sit amet ligula fringilla
-                tincidunt. Sed volutpat sed justo non sagittis. Nunc mattis
-                gravida ante sed gravida. Suspendisse faucibus et arcu
-                consectetur hendrerit. Sed dolor felis, fermentum a viverra
-                eget, iaculis in erat. Curabitur eu maximus magna, nec rutrum
-                neque. Sed ullamcorper, nunc ac dapibus interdum, arcu ligula
-                semper lacus, eu viverra tortor velit id tortor. Curabitur
-                ullamcorper massa est, congue ultrices mi vehicula nec. Fusce
-                quis consequat massa, sed finibus nisl.
-              </p>
-              <img
-                src="media/photograph-sprite.png" 
-                alt="A polaroid photograph"
-                eleventy:formats="png"
-                style="display: block; margin-inline: auto; width: 128px; height: 128px;"
-              />
-              <p>
-                Nunc est libero, hendrerit eu iaculis a, vehicula a ipsum.
-                Pellentesque placerat quam in facilisis interdum. Aliquam
-                sagittis enim et enim molestie, eget tincidunt eros mattis. Cras
-                at nisi lacus. Duis ac vehicula ex, eu pellentesque libero. Ut
-                justo massa, aliquet et ipsum in, congue fringilla dui. In vel
-                enim at est posuere laoreet.
-              </p>
+              <div class="letter-section">
+                <p>
+                  <em
+                    >To
+                    <button type="button" id="name-reroll">
+                      <img
+                        class="icon"
+                        src="media/reroll.png"
+                        alt="Reroll name"
+                      />
+                    </button>
+                    <span id="name">Killian</span></em
+                  >,
+                </p>
+                <p>
+                  <span class="confetti">Happy Birthday</span>!! I can't believe
+                  it's only been 9 months since we met on that fateful night in
+                  the Black Cat bathroom (lol), and you've quickly become one of
+                  my dearest friends. To celebrate your special day, I wanted to
+                  create something sweet and sentimental for you in a medium we
+                  both love -- silly websites (and deltarune because why not!)
+                  ^_^
+                </p>
+                <p>
+                  No birthday is complete without gifts, and oh look? What's
+                  that? A gift?! Maybe you should open it...
+                </p>
+              </div>
+              <div class="gift" data-title="photograph">
+                <button type="button" class="giftbox">
+                  <img
+                    class="giftbox-bottom"
+                    src="media/giftbox-bottom.png"
+                    alt="A giftbox"
+                    eleventy:formats="png"
+                  />
+                  <img
+                    class="giftbox-top"
+                    src="media/giftbox-top.png"
+                    alt=""
+                    eleventy:formats="png"
+                  />
+                </button>
+                <a
+                  class="gift-link hidden"
+                  href="/gifts/PHOTOGRAPH.png"
+                  download="PHOTOGRAPH.png"
+                >
+                  <img
+                    class="gift-sprite"
+                    src="media/photograph-sprite.png"
+                    alt="A photograph"
+                    eleventy:formats="png"
+                  />
+                </a>
+              </div>
+              <div class="letter-system">
+                <p>
+                  <strong>*</strong>
+                  <a href="/gifts/PHOTOGRAPH.png" target="_blank"
+                    ><strong>PHOTOGRAPH</strong></a
+                  >
+                  was added to your <strong>DOWNLOAD ITEMS</strong>.
+                </p>
+              </div>
+              <div class="letter-section">
+                <p>
+                  The <strong>PHOTOGRAPH</strong> represents a gift you've
+                  already received: all the cherished memories we have shared
+                  together and with our wonderful friends. It's cheesy, I know,
+                  but by the rule of threes I have to start with a gift from
+                  <span class="spoiler">the past</span> (click to reveal a
+                  spoiler about the theme of the gifts).
+                </p>
+                <p>
+                  It is impossible for me to overstate and how much love, joy,
+                  and happiness these memories bring to my life, and my
+                  <strong
+                    >SOUL<img class="icon" src="media/soul.png" alt=""
+                  /></strong>
+                  is fuller since I've gotten to know you.
+                </p>
+                <hr />
+                <p style="margin: 0">
+                  The laughter we share is sunlight on our gardens,
+                </p>
+                <p style="margin: 0; text-indent: 2em">
+                  the conversations give water to the ideas we grow,
+                </p>
+                <p style="margin: 0; text-indent: 3em">
+                  our memories become the harvest we reap,
+                </p>
+                <p style="margin: 0; text-indent: 4em">
+                  and my bouquet is richer with you.
+                </p>
+                <p>
+                  (Please forgive my use of such
+                  <span
+                    class="confetti"
+                    data-emoji="🌼,🌹,🌺,🪻,🏵️,💠,🌸"
+                    data-sound="flowery"
+                    >flowery</span
+                  >
+                  language ;3)
+                </p>
+              </div>
+              <div class="letter-section">
+                <p>
+                  Hmmm, it seems another gift has appeared. You'd better do
+                  something about that...
+                </p>
+              </div>
+              <div class="gift" data-title="photograph">
+                <button type="button" class="giftbox">
+                  <img
+                    class="giftbox-bottom"
+                    src="media/giftbox-bottom.png"
+                    alt="A giftbox"
+                    eleventy:formats="png"
+                  />
+                  <img
+                    class="giftbox-top"
+                    src="media/giftbox-top.png"
+                    alt=""
+                    eleventy:formats="png"
+                  />
+                </button>
+                <a
+                  class="gift-link hidden"
+                  href="/gifts/GAME.gba"
+                  download="GAME.gba"
+                >
+                  <img
+                    class="gift-sprite"
+                    src="media/controller-sprite.png"
+                    alt="A game controller"
+                    eleventy:formats="png"
+                  />
+                </a>
+              </div>
+              <div class="letter-system">
+                <p>
+                  <strong>*</strong>
+                  <a href="/gifts/GAME.gba" target="_blank"
+                    ><strong>GAME</strong></a
+                  >
+                  was added to your <strong>DOWNLOAD ITEMS</strong>.
+                </p>
+              </div>
             </div>
             <img
               id="letter-back-top"
@@ -320,10 +568,14 @@
       </div>
     </main>
     <div id="controls">
-      <label id="volume" class="hidden">
-        Volume:
-        <input type="range" min="0" max="1" step="0.01" value="0.1" />
-      </label>
+      <div id="audio-controls" class="hidden">
+        <label id="volume">
+          Volume:
+          <input type="range" min="0" max="1" step="0.01" value="0.25" />
+        </label>
+        <button id="pause-music">Pause Music</button>
+        <button id="play-music">Play Music</button>
+      </div>
       <button id="toggle-background" type="button">
         Toggle Background Animation
       </button>
@@ -331,26 +583,63 @@
     <script eleventy:ignore>
       "use strict";
       (() => {
-        /** HTMLInputElement */
+        /******* BG ANIMATION CONTROL *******/
+        /** @type HTMLButtonElement */
+        const toggleBackgroundEl = document.querySelector("#toggle-background");
+        toggleBackgroundEl.addEventListener("click", () =>
+          document.body.classList.toggle("toggled"),
+        );
+
+        /******* AUDIO *******/
+        /** @type HTMLDivElement */
+        const audioControlsEl = document.querySelector("#audio-controls");
+        /** @type HTMLInputElement */
         const volumeEl = document.querySelector("#volume");
-        Howler.volume(0.1);
+        /** @type HTMLButtonElement */
+        const pauseMusicEl = document.querySelector("#pause-music");
+        /** @type HTMLButtonElement */
+        const playMusicEl = document.querySelector("#play-music");
+        Howler.volume(0.25);
         volumeEl.addEventListener("input", () => {
           Howler.volume(parseFloat(event.target.value));
         });
-        const paper = new Howl({
-          src: '/audio/snd_paper_rise.wav',
-          html5: true,
-          onend: () => {
-            music.play()
-            volumeEl.classList.remove("hidden");
-          }
-        });
         const music = new Howl({
-          src: '/audio/shop-3.mp3',
+          src: "/audio/shop-3.mp3",
           hrml5: true,
           loop: true,
         });
-        
+        const paper = new Howl({
+          src: "/audio/snd_paper_rise.wav",
+          html5: true,
+        });
+        const impact = new Howl({
+          src: "/audio/snd_impact.wav",
+          hrml5: true,
+        });
+        const mouse = new Howl({
+          src: "/audio/snd_mouse.wav",
+          hrml5: true,
+        });
+        const open = new Howl({
+          src: "/audio/snd_dooropen.wav",
+          hrml5: true,
+        });
+        const close = new Howl({
+          src: "/audio/snd_doorclose.wav",
+          hrml5: true,
+        });
+        const item = new Howl({
+          src: "/audio/snd_item.wav",
+          hrml5: true,
+        });
+        const flowery = new Howl({
+          src: "/audio/snd_flowery.wav",
+          hrml5: true,
+        });
+        pauseMusicEl.addEventListener("click", () => music.pause());
+        playMusicEl.addEventListener("click", () => music.play());
+
+        /******* LETTER OPENING *******/
         /** @type HTMLElement */
         const mainEl = document.querySelector("main");
         /** @type HTMLDivElement */
@@ -367,11 +656,14 @@
             paper.play();
             setTimeout(() => {
               mainEl.append(letterContentsEl);
+              letterContentsEl.classList.add("letter-dismissed");
               mainEl.removeChild(letterEl);
               letterContentsEl.style.setProperty(
                 "margin-top",
                 `${-letterHeight / 2}px`,
               );
+              music.play();
+              audioControlsEl.classList.remove("hidden");
             }, 750);
           } else if (letterEl.classList.contains("flipped")) {
             letterEl.classList.add("opened");
@@ -381,11 +673,115 @@
           }
         });
 
+        /******* NAME REROLL *******/
+        const names = [
+          "Killian",
+          "Aki",
+          "Ika",
+          "Kiki",
+          "Tizi",
+          "IlovecookiesUwU",
+          "my favorite Frenchman",
+          'my favorite French "man"',
+          "mon cher ami",
+        ];
         /** @type HTMLButtonElement */
-        const toggleBackgroundEl = document.querySelector("#toggle-background");
-        toggleBackgroundEl.addEventListener("click", () =>
-          document.body.classList.toggle("toggled"),
-        );
+        const nameRerollEl = document.querySelector("#name-reroll");
+        /** @type HTMLElement */
+        const nameEl = document.querySelector("#name");
+        let nameIndex = 0;
+        nameRerollEl.addEventListener("click", () => {
+          nameIndex = (nameIndex + 1) % names.length;
+          nameEl.innerText = names[nameIndex];
+          mouse.play();
+        });
+
+        /******* CONFETTI *******/
+        const confettiDefaults = {
+          particleCount: 100,
+          spread: 70,
+        };
+        /** @type NodeListOf<HTMLSpanElement> */
+        const confettiEls = document.querySelectorAll(".confetti");
+        const confettiSounds = {
+          default: impact,
+          flowery: flowery,
+        };
+        confettiEls.forEach((confettiEl) => {
+          const confettiParams = {};
+          if (confettiEl.dataset.emoji !== undefined) {
+            const emojis = confettiEl.dataset.emoji.split(",");
+            confettiParams.shapes = emojis.map((emoji) =>
+              confetti.shapeFromText({ text: emoji, scalar: 2 }),
+            );
+            confettiParams.scalar = 2;
+          }
+          confettiEl.addEventListener("click", (ev) => {
+            confettiSounds[confettiEl.dataset.sound ?? "default"].play();
+            confetti({
+              ...confettiDefaults,
+              ...confettiParams,
+              origin: {
+                x: ev.clientX / window.innerWidth,
+                y: ev.clientY / window.innerHeight,
+              },
+            });
+            ev.preventDefault();
+            return false;
+          });
+        });
+
+        /******* SPOILERS *******/
+        /** @type NodeListOf<HTMLElement> */
+        const spoilerEls = document.querySelectorAll(".spoiler");
+        spoilerEls.forEach((spoilerEl) => {
+          spoilerEl.addEventListener("click", (ev) => {
+            spoilerEl.classList.toggle("revealed");
+            if (spoilerEl.classList.contains("revealed")) {
+              open.play();
+            } else {
+              close.play();
+            }
+          });
+        });
+
+        /******* GIFTS *******/
+        /** @type NodeListOf<HTMLDivElement> */
+        const giftEls = document.querySelectorAll(".gift");
+        giftEls.forEach((giftEl) => {
+          /** @type HTMLButtonElement */
+          const giftboxEl = giftEl.querySelector(".giftbox");
+          /** @type HTMLAnchorElement */
+          const giftLinkEl = giftEl.querySelector(".gift-link");
+
+          giftboxEl.addEventListener(
+            "click",
+            () => {
+              giftEl.classList.add("open");
+              open.play();
+            },
+            { once: true },
+          );
+          giftboxEl.addEventListener(
+            "transitionend",
+            () => {
+              giftboxEl.remove();
+              giftLinkEl.classList.remove("hidden");
+              requestAnimationFrame(() => {
+                giftLinkEl.classList.add("shown");
+              });
+            },
+            { once: true },
+          );
+          giftLinkEl.addEventListener(
+            "click",
+            () => {
+              giftLinkEl.remove();
+              item.play();
+            },
+            { once: true },
+          );
+        });
       })();
     </script>
   </body>
