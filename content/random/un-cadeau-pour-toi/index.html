@@ -22,6 +22,122 @@
       crossorigin="anonymous"
     />
     <style eleventy:ignore>
+      /* resets */
+      button,
+      input,
+      optgroup,
+      select,
+      textarea {
+        font-family: inherit;
+        font-size: 100%;
+        line-height: 1.15;
+        margin: 0;
+      }
+      button,
+      input {
+        overflow: visible;
+      }
+      button,
+      select {
+        text-transform: none;
+      }
+      button,
+      [type="button"],
+      [type="reset"],
+      [type="submit"] {
+        appearance: none;
+        -webkit-appearance: button;
+      }
+      /* custom slider, from range.css */
+      input[type="range"] {
+        width: 100%;
+        margin: 6px 0;
+        background-color: transparent;
+        appearance: none;
+        -webkit-appearance: none;
+      }
+      input[type="range"]:focus {
+        outline: none;
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        background: #000;
+        border: 2px solid #fff;
+        border-radius: 0;
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        margin-top: -8px;
+        width: 16px;
+        height: 16px;
+        background: #000;
+        border: 2px solid #fff;
+        border-radius: 0;
+        cursor: pointer;
+        -webkit-appearance: none;
+      }
+      input[type="range"]:focus::-webkit-slider-runnable-track {
+        background: #000;
+      }
+      input[type="range"]::-moz-range-track {
+        background: #000;
+        border: 2px solid #fff;
+        border-radius: 0;
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+      }
+      input[type="range"]::-moz-range-progress {
+        background: #fff;
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        background: #000;
+        border: 2px solid #fff;
+        border-radius: 0;
+        cursor: pointer;
+      }
+      input[type="range"]::-ms-track {
+        background: transparent;
+        border-color: transparent;
+        border-width: 6px 0;
+        color: transparent;
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+      }
+      input[type="range"]::-ms-fill-lower {
+        background: #000;
+        border: 2px solid #fff;
+        border-radius: 0;
+      }
+      input[type="range"]::-ms-fill-upper {
+        background: #000;
+        border: 2px solid #fff;
+        border-radius: 0;
+      }
+      input[type="range"]::-ms-thumb {
+        width: 16px;
+        height: 16px;
+        background: #000;
+        border: 2px solid #fff;
+        border-radius: 0;
+        cursor: pointer;
+        margin-top: 0px;
+      }
+      input[type="range"]:focus::-ms-fill-lower {
+        background: #000;
+      }
+      input[type="range"]:focus::-ms-fill-upper {
+        background: #000;
+      }
+      input[type="range"] {
+        margin: 0;
+        padding-inline: 2px;
+      }
+
       /* font */
       @font-face {
         font-family: "m5x7";
@@ -29,8 +145,10 @@
       }
 
       /* button style resets */
-      #name-reroll,
-      .giftbox {
+      .name-reroll,
+      .giftbox,
+      .passcode-number-up,
+      .passcode-number-down {
         appearance: none;
         background: none;
         border: 0;
@@ -41,6 +159,9 @@
         margin: 0;
         text-align: inherit;
         cursor: pointer;
+      }
+      *:disabled {
+        cursor: not-allowed;
       }
 
       /* root style defs */
@@ -89,12 +210,40 @@
         right: 1em;
         display: grid;
         padding: 0.5em;
-        background-color: white;
+        background-color: black;
+        color: white;
+        border: 2px solid white;
         filter: drop-shadow(0 0 4px #0008);
+        gap: 4px;
+        max-width: calc(100% - 3em);
+      }
+      #controls:has(#audio-controls.hidden) {
+        gap: 0px;
+      }
+      .system-button {
+        background-color: black;
+        color: white;
+        border: 2px solid white;
+        font-weight: normal;
+        cursor: pointer;
+      }
+      .system-button:hover:not(:disabled) {
+        background-color: #222;
+      }
+      .system-button[aria-pressed="true"]:not(:disabled),
+      .system-button:active:not(:disabled) {
+        background-color: white;
+        color: black;
+      }
+      .system-button:disabled {
+        opacity: 0.75;
+        background-color: #222;
+        cursor: not-allowed;
       }
       #audio-controls {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        grid-template-columns: repeat(2, auto);
         transition: opacity 250ms;
       }
       #audio-controls.hidden {
@@ -106,6 +255,7 @@
         grid-column: span 2;
         display: flex;
         align-items: center;
+        gap: 4px;
       }
       @keyframes bg-pattern {
         0% {
@@ -219,7 +369,8 @@
 
       /* gifts */
       /* hide all elements after a non-open gift */
-      .gift:has(.gift-link) ~ * {
+      .gift:has(.gift-link) ~ *,
+      #passcode-container:has(#passcode) ~ * {
         display: none;
       }
 
@@ -259,12 +410,21 @@
       .gift.open .giftbox-bottom {
         transform: translateY(50%);
       }
-      .gift-link {
+      .gift-link,
+      .gift-linknt {
         display: block;
         position: absolute;
         inset: 0;
         width: 100%;
         height: 100%;
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+      }
+      .gift-linknt {
+        cursor: not-allowed;
       }
       .gift-link.hidden {
         display: none;
@@ -283,6 +443,59 @@
         inset: 0;
         width: 100%;
         height: 100%;
+      }
+
+      /* Passcode */
+      #passcode {
+        text-align: center;
+      }
+      #passcode-entry {
+        font-size: 2em;
+        display: inline-grid;
+        width: auto;
+        margin-inline: auto;
+        grid-template-columns: repeat(4, auto);
+        grid-template-rows: repeat(3, auto);
+        grid-auto-flow: row;
+        align-content: center;
+      }
+      .passcode-number {
+        display: grid;
+        grid-row: span 3;
+        grid-template-rows: subgrid;
+        text-align: center;
+      }
+      .passcode-number-up,
+      .passcode-number-down {
+        border: none;
+        background-color: transparent;
+        opacity: 0;
+        height: 0.5em;
+        width: 1em;
+        display: grid;
+        align-items: center;
+        justify-content: center;
+      }
+      .passcode-number-up img,
+      .passcode-number-down img {
+        height: 0.5em;
+        width: 0.5em;
+      }
+      .passcode-number-down img {
+        transform: rotate(0.5turn);
+      }
+      .passcode-number:hover .passcode-number-up:not(:disabled),
+      .passcode-number:has(:focus-visible) .passcode-number-up:not(:disabled),
+      .passcode-number:hover .passcode-number-down:not(:disabled),
+      .passcode-number:has(:focus-visible) .passcode-number-down:not(:disabled) {
+        opacity: 0.5;
+      }
+      .passcode-number .passcode-number-up:active:not(:disabled),
+      .passcode-number .passcode-number-down:active:not(:disabled) {
+        opacity: 1;
+      }
+      #passcode-submit {
+        padding-inline: 1em;
       }
 
       /* back faces need to be flipped over and transparent until they need to show */
@@ -378,6 +591,15 @@
         text-decoration: underline dashed currentColor 2px;
         cursor: help;
       }
+
+      #signature {
+        text-align: end;
+        font-style: italic;
+      }
+      #signature img {
+        height: 32px;
+        width: 128px;
+      }
     </style>
   </head>
 
@@ -397,31 +619,32 @@
                 <p>
                   <em
                     >To
-                    <button type="button" id="name-reroll">
+                    <button type="button" class="name-reroll">
                       <img
                         class="icon"
                         src="media/reroll.png"
                         alt="Reroll name"
                       />
                     </button>
-                    <span id="name">Killian</span></em
+                    <span class="name">Killian</span></em
                   >,
                 </p>
                 <p>
                   <span class="confetti">Happy Birthday</span>!! I can't believe
-                  it's only been 9 months since we met on that fateful night in
-                  the Black Cat bathroom (lol), and you've quickly become one of
-                  my dearest friends. To celebrate your special day, I wanted to
-                  create something sweet and sentimental for you in a medium we
-                  both love -- silly websites (and deltarune because why not!)
-                  ^_^
+                  it's only been 9 months since we met (in the Black Cat
+                  bathroom lol), and you've quickly become one of my dearest
+                  friends. To celebrate your special day, I wanted to create
+                  something sweet and sentimental for you in a medium we both
+                  love -- silly websites (and deltarune because why not!) ^_^
                 </p>
+              </div>
+              <div class="letter-section">
                 <p>
                   No birthday is complete without gifts, and oh look? What's
                   that? A gift?! Maybe you should open it...
                 </p>
               </div>
-              <div class="gift" data-title="photograph">
+              <div class="gift" id="gift-photograph">
                 <button type="button" class="giftbox">
                   <img
                     class="giftbox-bottom"
@@ -505,7 +728,7 @@
                   something about that...
                 </p>
               </div>
-              <div class="gift" data-title="photograph">
+              <div class="gift" id="gift-game">
                 <button type="button" class="giftbox">
                   <img
                     class="giftbox-bottom"
@@ -542,6 +765,194 @@
                   was added to your <strong>DOWNLOAD ITEMS</strong>.
                 </p>
               </div>
+              <div id="passcode-container">
+                <div id="passcode" class="letter-system">
+                  <div id="passcode-entry">
+                    <div class="passcode-number">
+                      <button id="number-1-up" class="passcode-number-up">
+                        <img
+                          src="media/arrow.png"
+                          alt="up"
+                          eleventy:formats="png"
+                        />
+                      </button>
+                      <output
+                        for="number-1-up,number-1-down"
+                        class="passcode-number-output"
+                        >0</output
+                      >
+                      <button id="number-1-down" class="passcode-number-down">
+                        <img
+                          src="media/arrow.png"
+                          alt="down"
+                          eleventy:formats="png"
+                        />
+                      </button>
+                    </div>
+                    <div class="passcode-number">
+                      <button id="number-2-up" class="passcode-number-up">
+                        <img
+                          src="media/arrow.png"
+                          alt="up"
+                          eleventy:formats="png"
+                        />
+                      </button>
+                      <output
+                        for="number-2-up,number-2-down"
+                        class="passcode-number-output"
+                        >0</output
+                      >
+                      <button id="number-2-down" class="passcode-number-down">
+                        <img
+                          src="media/arrow.png"
+                          alt="down"
+                          eleventy:formats="png"
+                        />
+                      </button>
+                    </div>
+                    <div class="passcode-number">
+                      <button id="number-3-up" class="passcode-number-up">
+                        <img
+                          src="media/arrow.png"
+                          alt="up"
+                          eleventy:formats="png"
+                        />
+                      </button>
+                      <output
+                        for="number-3-up,number-3-down"
+                        class="passcode-number-output"
+                        >0</output
+                      >
+                      <button id="number-3-down" class="passcode-number-down">
+                        <img
+                          src="media/arrow.png"
+                          alt="down"
+                          eleventy:formats="png"
+                        />
+                      </button>
+                    </div>
+                    <div class="passcode-number">
+                      <button id="number-4-up" class="passcode-number-up">
+                        <img
+                          src="media/arrow.png"
+                          alt="up"
+                          eleventy:formats="png"
+                        />
+                      </button>
+                      <output
+                        for="number-4-up,number-4-down"
+                        class="passcode-number-output"
+                        >0</output
+                      >
+                      <button id="number-4-down" class="passcode-number-down">
+                        <img
+                          src="media/arrow.png"
+                          alt="down"
+                          eleventy:formats="png"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                  <p>
+                    <button
+                      class="system-button"
+                      id="passcode-submit"
+                      type="button"
+                    >
+                      CONFIRM
+                    </button>
+                  </p>
+                </div>
+              </div>
+              <div class="letter-section">
+                <p>
+                  Welcome back! You took
+                  <span id="passcode-time">UNDEFINED</span> to find the
+                  passcode. You don't get a prize or anything, just thought you
+                  might wanna know XD
+                </p>
+              </div>
+              <div class="letter-section">
+                <p>
+                  And so that brings us to the final gift. What could it be???
+                </p>
+              </div>
+              <div class="gift" id="gift-tiramisu">
+                <button type="button" class="giftbox">
+                  <img
+                    class="giftbox-bottom"
+                    src="media/giftbox-bottom.png"
+                    alt="A giftbox"
+                    eleventy:formats="png"
+                  />
+                  <img
+                    class="giftbox-top"
+                    src="media/giftbox-top.png"
+                    alt=""
+                    eleventy:formats="png"
+                  />
+                </button>
+                <button class="gift-link hidden">
+                  <img
+                    class="gift-sprite"
+                    src="media/tiramisu.png"
+                    alt="Tiramisu"
+                    eleventy:formats="png"
+                  />
+                </button>
+              </div>
+              <div class="letter-system">
+                <p>
+                  <strong>*</strong>
+                  You tried to add <strong>TIRAMISU</strong> to your
+                  <strong>DOWNLOAD ITEMS</strong>, but you can't download food,
+                  silly.
+                </p>
+              </div>
+              <div class="letter-section">
+                <p>
+                  My final gift to you is one that you actually can't have yet.
+                  It is the gift of <span class="spoiler">the future</span>, and
+                  it is my promise to you that at some point in our lifetimes I
+                  <em>will</em> treat you to a delicious <strong>TIRAMISU</strong>.
+                </p>
+                <p>
+                  Beyond that, it represents all the sweet things yet to come.
+                  The games waiting to be made, the worlds (digital and
+                  physical) waiting to be explored, and the friendships waiting
+                  to
+                  <span
+                    class="confetti"
+                    data-emoji="🌼,🌹,🌺,🪻,🏵️,💠,🌸"
+                    data-sound="flowers-bloom"
+                    >bloom</span
+                  >. Your story is wide open, and I can't wait to see what you
+                  write.
+                </p>
+              </div>
+              <div class="letter-section">
+                <p>
+                  Bon anniversaire,
+
+                  <button type="button" class="name-reroll">
+                    <img
+                      class="icon"
+                      src="media/reroll.png"
+                      alt="Reroll name"
+                    />
+                  </button>
+                  <span class="name">Killian</span>!
+                </p>
+                <p id="signature">
+                  Votre amie dévouée,<br />
+                  <img
+                    id="signature"
+                    alt="Violet"
+                    src="media/signature.png"
+                    eleventy:formats="png"
+                  />
+                </p>
+              </div>
             </div>
             <img
               id="letter-back-top"
@@ -569,14 +980,16 @@
     </main>
     <div id="controls">
       <div id="audio-controls" class="hidden">
+        <button class="system-button" id="pause-music">Pause Music</button>
+        <button class="system-button" id="play-music" aria-pressed="true">
+          Play Music
+        </button>
         <label id="volume">
           Volume:
           <input type="range" min="0" max="1" step="0.01" value="0.25" />
         </label>
-        <button id="pause-music">Pause Music</button>
-        <button id="play-music">Play Music</button>
       </div>
-      <button id="toggle-background" type="button">
+      <button class="system-button" id="toggle-background" type="button">
         Toggle Background Animation
       </button>
     </div>
@@ -636,8 +1049,41 @@
           src: "/audio/snd_flowery.wav",
           hrml5: true,
         });
-        pauseMusicEl.addEventListener("click", () => music.pause());
-        playMusicEl.addEventListener("click", () => music.play());
+        const flowersBloomInYourHeart = new Howl({
+          src: "/audio/snd_flowery_voiceclip_flowers_blooms_in_your_heart.wav",
+          hrml5: true,
+        });
+        const menumove = new Howl({
+          src: "/audio/snd_menumove.wav",
+          hrml5: true,
+        });
+        const menumove_down = new Howl({
+          src: "/audio/snd_menumove.wav",
+          hrml5: true,
+          rate: 0.7,
+        });
+        const error = new Howl({
+          src: "/audio/snd_error.wav",
+          hrml5: true,
+        });
+        const won = new Howl({
+          src: "/audio/snd_won.wav",
+          hrml5: true,
+        });
+        pauseMusicEl.addEventListener("click", () => {
+          if (music.playing()) {
+            music.pause();
+            playMusicEl.ariaPressed = false;
+            pauseMusicEl.ariaPressed = true;
+          }
+        });
+        playMusicEl.addEventListener("click", () => {
+          if (!music.playing()) {
+            music.play();
+            playMusicEl.ariaPressed = true;
+            pauseMusicEl.ariaPressed = false;
+          }
+        });
 
         /******* LETTER OPENING *******/
         /** @type HTMLElement */
@@ -685,15 +1131,17 @@
           'my favorite French "man"',
           "mon cher ami",
         ];
-        /** @type HTMLButtonElement */
-        const nameRerollEl = document.querySelector("#name-reroll");
-        /** @type HTMLElement */
-        const nameEl = document.querySelector("#name");
+        /** @type NodeListOf<HTMLButtonElement> */
+        const nameRerollEls = document.querySelectorAll(".name-reroll");
+        /** @type NodeListOf<HTMLElement> */
+        const nameEls = document.querySelectorAll(".name");
         let nameIndex = 0;
-        nameRerollEl.addEventListener("click", () => {
-          nameIndex = (nameIndex + 1) % names.length;
-          nameEl.innerText = names[nameIndex];
-          mouse.play();
+        nameRerollEls.forEach((nameRerollEl) => {
+          nameRerollEl.addEventListener("click", () => {
+            nameIndex = (nameIndex + 1) % names.length;
+            nameEls.forEach((nameEl) => (nameEl.innerText = names[nameIndex]));
+            mouse.play();
+          });
         });
 
         /******* CONFETTI *******/
@@ -706,6 +1154,7 @@
         const confettiSounds = {
           default: impact,
           flowery: flowery,
+          "flowers-bloom": flowersBloomInYourHeart,
         };
         confettiEls.forEach((confettiEl) => {
           const confettiParams = {};
@@ -717,6 +1166,7 @@
             confettiParams.scalar = 2;
           }
           confettiEl.addEventListener("click", (ev) => {
+            confettiSounds[confettiEl.dataset.sound ?? "default"].stop();
             confettiSounds[confettiEl.dataset.sound ?? "default"].play();
             confetti({
               ...confettiDefaults,
@@ -748,6 +1198,9 @@
         /******* GIFTS *******/
         /** @type NodeListOf<HTMLDivElement> */
         const giftEls = document.querySelectorAll(".gift");
+
+        let passcodeStartTime = undefined;
+
         giftEls.forEach((giftEl) => {
           /** @type HTMLButtonElement */
           const giftboxEl = giftEl.querySelector(".giftbox");
@@ -776,11 +1229,128 @@
           giftLinkEl.addEventListener(
             "click",
             () => {
-              giftLinkEl.remove();
-              item.play();
+              if (giftEl.id === "gift-tiramisu") {
+                error.play();
+                giftLinkEl.classList.remove("gift-link");
+                giftLinkEl.classList.add("gift-linknt");
+              } else {
+                giftLinkEl.remove();
+                item.play();
+                if (giftEl.id === "gift-game") {
+                  music.pause();
+                  playMusicEl.disabled = true;
+                  pauseMusicEl.disabled = true;
+                  passcodeStartTime = Date.now();
+                } else {
+                  document.title = "Deux cadeaux pour toi...";
+                }
+              }
             },
             { once: true },
           );
+        });
+
+        /******* PASSCODE *******/
+        /** @type HTMLDivElement */
+        const passcodeContainerEl = document.querySelector(
+          "#passcode-container",
+        );
+        /** @type HTMLDivElement */
+        const passcodeEl = document.querySelector("#passcode");
+        /** @type NodeListOf<HTMLDivElement> */
+        const numberEls = passcodeEl.querySelectorAll(".passcode-number");
+        /** @type HTMLButtonElement */
+        const passcodeSubmitEl = document.querySelector("#passcode-submit");
+        /** @type HTMLElement */
+        const passcodeTimeEl = document.querySelector("#passcode-time");
+
+        let numbers = [0, 0, 0, 0];
+        numberEls.forEach((numberEl, index) => {
+          /** @type HTMLButtonElement */
+          const upEl = numberEl.querySelector(".passcode-number-up");
+          /** @type HTMLOutputElement */
+          const outputEl = numberEl.querySelector(".passcode-number-output");
+          /** @type HTMLButtonElement */
+          const downEl = numberEl.querySelector(".passcode-number-down");
+          upEl.addEventListener("click", () => {
+            numbers[index] = (numbers[index] + 1) % 10;
+            outputEl.value = numbers[index];
+            menumove.play();
+          });
+          downEl.addEventListener("click", () => {
+            numbers[index] = (numbers[index] + 9) % 10;
+            outputEl.value = numbers[index];
+            menumove_down.play();
+          });
+        });
+
+        // sneaky little hacker; you'll have to do math do deobfuscate the passcode :3
+        // or go play the game as intended!
+        const obfuscatedCode = [7, 2, 0, 3];
+        passcodeSubmitEl.addEventListener("click", () => {
+          if (
+            numbers
+              .map((v) => (v * 7) % 10)
+              .every((v, i) => v === obfuscatedCode[i])
+          ) {
+            const total_ms = Date.now() - passcodeStartTime;
+            // disable all the buttons
+            passcodeEl.querySelectorAll('button').forEach(buttonEl => buttonEl.disabled = true);
+            won
+              .once("end", () => {
+                // how long did it take
+                const total_s = Math.floor(total_ms / 1000);
+                const s = total_s % 60;
+                const total_m = Math.floor(total_s / 60);
+                const m = total_m % 60;
+                const total_h = Math.floor(total_m / 60);
+                const messageParts = [
+                  total_h > 1
+                    ? `${total_h} hours`
+                    : total_h === 1
+                      ? `1 hour`
+                      : null,
+                  m > 1 ? `${m} minutes` : m === 1 ? `1 minute` : null,
+                  s > 1 ? `${s} seconds` : s === 1 ? `1 second` : null,
+                ].filter((messagePart) => messagePart !== null);
+                let message = messageParts.pop();
+                if (messageParts.length > 0) {
+                  message = messageParts.join(", ") + " and " + message;
+                }
+                passcodeTimeEl.innerText = message;
+                // fix the container height to keep blank space when the passcode blows up
+                passcodeContainerEl.style.setProperty(
+                  "height",
+                  `${passcodeContainerEl.clientHeight}px`,
+                );
+                // confetti
+                const { top, left } = passcodeEl.getBoundingClientRect();
+                confetti({
+                  particleCount: 200,
+                  spread: 360,
+                  origin: {
+                    x: (left + passcodeEl.clientWidth / 2) / window.innerWidth,
+                    y: (top + passcodeEl.clientHeight / 2) / window.innerHeight,
+                  },
+                });
+                // delete the element
+                passcodeEl.remove();
+                document.title = "Trois cadeaux pour toi...";
+                // sfx
+                impact
+                  .once("end", () => {
+                    playMusicEl.disabled = false;
+                    pauseMusicEl.disabled = false;
+                    if (playMusicEl.ariaPressed) {
+                      music.play();
+                    }
+                  })
+                  .play();
+              })
+              .play();
+          } else {
+            error.play();
+          }
         });
       })();
     </script>
